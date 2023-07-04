@@ -18,9 +18,37 @@ pipeline {
         stage('Push to S3') {
             steps {
                 script {
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-s3-full-access', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                    withCredentials(
+                        [[
+                            $class: 'AmazonWebServicesCredentialsBinding',
+                            accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                            credentialsId: 'aws-s3-full-access',
+                            secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                        ]]
+                    )
+                    {
                         // Upload the tar archive to S3
-                        s3Upload consoleLogLevel: 'INFO', dontSetBuildResultOnFailure: false, dontWaitForConcurrentBuildCompletion: false, entries: [[bucket: 'jenkinsartifactbucket', excludedFile: '', flatten: false, gzipFiles: false, keepForever: false, managedArtifacts: true, noUploadOnFailure: false, selectedRegion: 'eu-west-1', showDirectlyInBrowser: true, sourceFile: '**/*', storageClass: 'STANDARD', uploadFromSlave: false, useServerSideEncryption: false]], pluginFailureResultConstraint: 'FAILURE', profileName: 'latest-profile', userMetadata: []
+                        s3Upload consoleLogLevel: 'INFO',
+                        dontSetBuildResultOnFailure: false,
+                        dontWaitForConcurrentBuildCompletion: false,
+                        entries: [[
+                            bucket: 'jenkinsartifactbucket',
+                            excludedFile: '',
+                            flatten: false,
+                            gzipFiles: false,
+                            keepForever: false,
+                            managedArtifacts: true,
+                            noUploadOnFailure: false,
+                            selectedRegion: 'eu-west-1',
+                            showDirectlyInBrowser: true,
+                            sourceFile: '**/*',
+                            storageClass: 'STANDARD',
+                            uploadFromSlave: false,
+                            useServerSideEncryption: false
+                        ]],
+                        pluginFailureResultConstraint: 'FAILURE',
+                        profileName: 'latest-profile',
+                        userMetadata: []
                     }
                 }
             }
