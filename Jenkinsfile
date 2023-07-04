@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        JENKINS_OPTS = '-Djenkins.model.Jenkins.logStartupPerformance=true -Dorg.jenkinsci.plugins.durabletask.BourneShellScript.HEARTBEAT_CHECK_INTERVAL=300 -Dorg.jenkinsci.plugins.s3.S3ServiceList.BUCKET=jenkinsartifactbucket'
-    }
-
     stages {
         stage('Archive Files') {
             steps {
@@ -22,32 +18,35 @@ pipeline {
                         [[
                             $class: 'AmazonWebServicesCredentialsBinding',
                             accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                            credentialsId: 'aws-s3-full-access',
+                            credentialsId: 'aws-s3-full-access',        // Create this in credentials
+                            // Create a credentails from (http://localhost:8080/user/admin/credentials/)
                             secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                         ]]
                     )
+                    /* groovylint-disable-next-line NestedBlockDepth */
                     {
                         // Upload the tar archive to S3
                         s3Upload consoleLogLevel: 'INFO',
                         dontSetBuildResultOnFailure: false,
                         dontWaitForConcurrentBuildCompletion: false,
                         entries: [[
-                            bucket: 'jenkinsartifactbucket',
+                            bucket: 'jenkinsartifactbucket',            // change bucket name
                             excludedFile: '',
                             flatten: false,
                             gzipFiles: false,
                             keepForever: false,
                             managedArtifacts: true,
                             noUploadOnFailure: false,
-                            selectedRegion: 'eu-west-1',
+                            selectedRegion: 'eu-west-1',                // select bucket region
                             showDirectlyInBrowser: true,
-                            sourceFile: '**/*',
+                            sourceFile: '**/*',                         // artifact files
                             storageClass: 'STANDARD',
                             uploadFromSlave: false,
                             useServerSideEncryption: false
                         ]],
                         pluginFailureResultConstraint: 'FAILURE',
-                        profileName: 'latest-profile',
+                        profileName: 'latest-profile',                  // create this after installing s3 plugin
+                        // create profile from this link, look at the end(http://localhost:8080/manage/configure)
                         userMetadata: []
                     }
                 }
