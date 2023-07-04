@@ -39,7 +39,7 @@ pipeline {
                             noUploadOnFailure: false,
                             selectedRegion: 'eu-west-1',                // select bucket region
                             showDirectlyInBrowser: true,
-                            sourceFile: '**/*',                         // artifact files
+                            sourceFile: 'repo_files.tar.gz',                         // artifact files
                             storageClass: 'STANDARD',
                             uploadFromSlave: false,
                             useServerSideEncryption: false
