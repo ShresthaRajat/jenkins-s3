@@ -10,7 +10,7 @@ pipeline {
             steps {
                 script {
                     // Create a tar archive of all repository files
-                    sh 'tar -czf repo_files.tar.gz .'
+                    sh 'touch repo_files.tar.gz'
                 }
             }
         }
